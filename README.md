@@ -1,12 +1,16 @@
 # bitcharts
 
-This repository contains restructured material from the Google Colab notebook titled: [Coupled Martingale Strategy Testing on Bitcoin Trading](https://colab.research.google.com/drive/1SnWa53xzA83IYTlgqP8eOx5LB82ux8SG?usp=sharing) in a project format. Usage (terminal):
+This repository contains restructured material from the Google Colab notebook titled: [<b><i>Coupled Martingale Strategy Testing on Bitcoin Trading</i> (Garcia)</b> ](https://colab.research.google.com/drive/1SnWa53xzA83IYTlgqP8eOx5LB82ux8SG?usp=sharing) in a project format. Usage (terminal):
 
 ```ruby
 git clone ...
 cd bitcharts
 python scripts.py
 ```
+
+## Continuity
+
+The contents from this project are rooted on the Martingale strategy which is showcased in the [<b><i>Martingale DCA on Coin Flip Games</i> (Garcia)</b>](https://colab.research.google.com/drive/1ZK_eW-kyHN3vMjPN_D0TAerG6J631ooV?usp=sharing) Google Colab Notebook.
 
 #### Disclaimer : Not financial advice
 <sub>
