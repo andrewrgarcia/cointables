@@ -27,7 +27,7 @@ pip install -r requirements.txt
 ```
 Once the virtual environment is activated, run the `results_` scripts
 
-## Martingale (Theory)
+## Martingale-Hedged MACD (Theoretical)
 
 Results adapted from the Colab notebook [<b><i>Coupled Martingale Strategy Testing on Bitcoin Trading</i> (Garcia)</b> ](https://colab.research.google.com/drive/1SnWa53xzA83IYTlgqP8eOx5LB82ux8SG?usp=sharing) in a project format. 
 
