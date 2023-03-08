@@ -14,7 +14,7 @@ This repository contains restructured material from Google Colab notebooks draft
 To import this repository to your local environment and access it (on terminal):
 
 ```ruby
-git clone git@github.com:[your-github-username]/voxelmap.git
+git clone git@github.com:[your-github-username]/bitcharts.git
 cd bitcharts
 ```
 
