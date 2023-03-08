@@ -27,7 +27,7 @@ pip install -r requirements.txt
 ```
 Once the virtual environment is activated, run the `results_` scripts
 
-## Martingale
+## Martingale (Theory)
 
 Results adapted from the Colab notebook [<b><i>Coupled Martingale Strategy Testing on Bitcoin Trading</i> (Garcia)</b> ](https://colab.research.google.com/drive/1SnWa53xzA83IYTlgqP8eOx5LB82ux8SG?usp=sharing) in a project format. 
 
@@ -44,7 +44,7 @@ python results_mart.py
 [![](img/Figure_1.png)](https://colab.research.google.com/drive/1SnWa53xzA83IYTlgqP8eOx5LB82ux8SG?usp=sharing)
 
 
-## Support Vector Machines
+## Support Vector Machines (AI)
 
 Results adapted from the Colab notebook [<b><i>Support Vector Machines on Bitcoin Prices</i> (Garcia)</b> ](https://colab.research.google.com/drive/11aveFb9tdg33A2tDnDQfjRkJ4KaGs29x?usp=sharing) in a project format. 
 
