@@ -17,6 +17,19 @@ INTERVAL = '1m'
 
 class Chart:
   def __init__(self,coin='BTC',market='USDT',candles='30m'):
+    '''Chart class. Handler for the creation of financial charts for cryptocurrencies and analysis thereof
+
+    Parameters
+    ----------
+    coin : np.array(int)
+        ticker name of quote currency (default: BTC)
+    market : int / 'auto'(str)
+        ticker name of base currency (default: USDT)
+    candles : str
+        time interval for candles (default: 30m)
+    DATAFRAME : <pandas.DataFrame object>
+        financial data of price activity loaded from above information.
+    '''
     self.coin = coin
     self.market = market
     self.candles = candles
@@ -50,11 +63,6 @@ class Chart:
       base = self.market
       interval = self.candles
 
-      # btcusd = 1 if quote == 'BTC' else \
-      # self.get_bars('BTCUSDT', interval = interval)['c'].astype('float') \
-      # if base == 'USDT' else 1
-
-
       if quote == 'BTC':
         btcusd = 1
       elif base == 'USDT':
@@ -64,12 +72,8 @@ class Chart:
       else:
         btcusd = 1
 
-      # base0 = 'USDT' if quote == 'BTC' else 'BTC'
-
       self.market = 'USDT' if quote == 'BTC' else 'BTC'
       self.coin = quote
-
-      # df = get_bars(quote + base0, interval = interval)
 
       df = self.get_bars()
 
@@ -82,8 +86,8 @@ class Chart:
       return df
 
   def rollstats_MACD(self):
-    '''rolling statistics (also known as "financial indicators")'''
-    '---MOVING AVERAGES STRATEGY (MACD)---'
+    '''rolling statistics (also known as "financial indicators")
+    ---MOVING AVERAGES STRATEGY (MACD)---'''
     df = self.DATAFRAME
     MA1 = 12
     MA2 = 26
