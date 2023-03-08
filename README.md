@@ -41,7 +41,7 @@ These results are rooted on the Martingale strategy which is showcased in the [<
 python results_mart.py
 ```
 
-![](img/Figure_1.png)
+[![](img/Figure_1.png)](https://colab.research.google.com/drive/1SnWa53xzA83IYTlgqP8eOx5LB82ux8SG?usp=sharing)
 
 
 ## Support Vector Machines
@@ -55,7 +55,7 @@ Results adapted from the Colab notebook [<b><i>Support Vector Machines on Bitcoi
 python results_SVC.py
 ```
 
-![](img/Figure_2.png)
+[![](img/Figure_2.png)](https://colab.research.google.com/drive/11aveFb9tdg33A2tDnDQfjRkJ4KaGs29x?usp=sharing)
 
 
 
