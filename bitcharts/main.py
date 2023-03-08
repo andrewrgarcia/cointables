@@ -29,11 +29,14 @@ class Chart:
         time interval for candles (default: 30m)
     DATAFRAME : <pandas.DataFrame object>
         financial data of price activity loaded from above information.
+    message : str
+        any message from any external function to store on Chart class (easy migration across modules) 
     '''
     self.coin = coin
     self.market = market
     self.candles = candles
     self.DATAFRAME = []
+    self.message = ''
 
   def get_bars(self):
 
@@ -124,8 +127,12 @@ class Chart:
 
     strategy_gain = df['strategy'].iloc[-1] - df['market'].iloc[-1]
 
-    print('final return-on-investment: {:.2f}%'.format(strategy_gain*100) )
+    self.message = 'final return-on-investment: {:.2f}%'.format(strategy_gain*100)
+
+    print(self.message)
 
     df["signal"][df["signal"] == 0.0] = np.nan
+
+
 
 

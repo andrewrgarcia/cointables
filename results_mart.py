@@ -1,8 +1,7 @@
 import bitcharts as bits 
 import mplfinance as mpf
 
-
-def backtest(mart):
+def backtest(mart,title_extra=''):
 
   chart = bits.Chart()
   
@@ -29,12 +28,14 @@ def backtest(mart):
 
   s  = mpf.make_mpf_style(base_mpf_style='nightclouds',figcolor='#222')
 
-  mpf.plot(df, title=chart.coin+chart.market+" ({} candles)".format(chart.candles),\
-          mav=(12,26), type='candle',ylabel='Candle',addplot=ap,panel_ratios=(2,1),\
+  mpf.plot(df, title=chart.coin+chart.market+" ({} candles) {}".format(chart.candles,title_extra),\
+          mav=(12,26), type='candle',ylabel='Candle',addplot=ap,panel_ratios=(2,1),xlabel=chart.message,\
           figratio=(1,1),figscale=1.5,style=s)
   
+string='Without Martingale'
+print('\n'+string)
+backtest(False,'--- '+string)
 
-print('\nWithout Martingale')
-backtest(False)
-print('\nWith Martingale-Hedged strategy')
-backtest(True)
+string='Martingale-Hedged strategy'
+print('\n'+string)
+backtest(True,'--- '+string)
