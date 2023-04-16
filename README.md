@@ -1,6 +1,6 @@
 # cointables
 
-Cointables is a Python package that provides a simple and convenient framework to extract historical Open-High-Low-Close (OHLC) data for various cryptocurrencies from Binance. Cointables supports different sampling methods and GET approaches, allowing users to customize their data extraction process. This is a fork from `andrewrgarcia/bitcharts`
+Cointables is a Python package that provides a simple and convenient framework to extract historical Open-High-Low-Close (OHLC) data for various cryptocurrencies from Binance. Cointables supports different sampling methods and GET approaches, allowing users to customize their data extraction process. This is a fork from [bitcharts](https://github.com/andrewrgarcia/bitcharts)
 
 
 ## Installation
