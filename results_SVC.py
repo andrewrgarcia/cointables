@@ -41,15 +41,18 @@ def strat_compute_SVC(chart_obj):
   return data 
 
 
+from binance.client import Client
+import config
+
 def backtest():
   
-  chart = bits.Chart()
+  chart = bits.Chart(client = Client(config.API_KEY, config.API_SECRET))
 
   chart.coin = "BTC"
   chart.market = "USDT"
-  chart.candles = "1h"
+  chart.candles = "30m"
   
-  chart.coinpair()
+  chart.coinGET(chart.get_data(num_candles=None))
   
   df = chart.DATAFRAME
 

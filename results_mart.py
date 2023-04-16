@@ -1,11 +1,14 @@
 import bitcharts as bits 
 import mplfinance as mpf
 
+from binance.client import Client
+import config
+
 def backtest(mart,title_extra=''):
 
-  chart = bits.Chart()
-  
-  chart.coinpair()
+  chart = bits.Chart(client = Client(config.API_KEY, config.API_SECRET))
+
+  chart.coinGET(chart.get_data())
   chart.rollstats_MACD()
   chart.regimes()
 

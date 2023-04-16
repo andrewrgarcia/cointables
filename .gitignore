@@ -1,2 +1,6 @@
+# virtualenvs & cache
 venv
 __pycache__
+
+# permissions / keys
+config.py
