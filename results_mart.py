@@ -8,7 +8,7 @@ def backtest(mart,title_extra=''):
 
   chart = bits.Chart(client = Client(config.API_KEY, config.API_SECRET))
 
-  chart.coinGET(chart.get_data())
+  chart.coinGET()
   chart.rollstats_MACD()
   chart.regimes()
 

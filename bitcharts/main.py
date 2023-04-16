@@ -37,6 +37,33 @@ class Chart:
         self.DATAFRAME = []
         self.message = ''
 
+
+    def get_bars__old(self):
+        '''
+        This method is no longer used and has been discontinued. It cannot perform GET requests when a remote server (such as Jupyter notebook or GitHub Actions) is used.
+
+        It was originally adapted from the following source:
+        "How to Download Historical Price Data from Binance with Python" by marketstack.
+        (https://steemit.com/python/@marketstack/how-to-download-historical-price-data-from-binance-with-python)
+        '''
+        quote = self.coin + self.market
+        interval = self.candles
+
+        root_url = 'https://api.binance.com/api/v1/klines'
+        url = root_url + '?symbol=' + quote + '&interval=' + interval
+        data = json.loads(requests.get(url).text)
+        # print(data)
+        df = pd.DataFrame(data)
+        df.columns = ['open_time',
+                      'o', 'h', 'l', 'c', 'v',
+                      'close_time', 'qav', 'num_trades',
+                      'taker_base_vol', 'taker_quote_vol', 'ignore']
+        df.index = [dt.datetime.fromtimestamp(x/1000.0) for x in df.close_time]
+
+        self.DATAFRAME = df
+
+        return df
+
     def get_data(self, time_diff=2419200000, num_candles=500):
         """
         Retrieve historical market data from the Binance API and return it as a Pandas DataFrame object.
@@ -75,35 +102,19 @@ class Chart:
 
         return df
 
-    def get_bars__old(self):
+    def coinGET(self,time_diff=2419200000, num_candles=500):
+        '''Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market').
+        
+        Note: The base currency for alts must be either USDT or BTC.
+        
+        Parameters
+        -------------------
+        time_diff : int, optional
+            An integer representing the time difference in seconds between the current time and the starting time of the historical data to retrieve. The default value is 2419200 seconds, which is equivalent to 28 days.
+        num_candles : int, optional
+            An integer representing the number of historical candles to retrieve. The default value is 500. If this parameter is provided, it takes priority over the `time_diff` parameter.
+
         '''
-        This method is no longer used and has been discontinued. It cannot perform GET requests when a remote server (such as Jupyter notebook or GitHub Actions) is used.
-
-        It was originally adapted from the following source:
-        "How to Download Historical Price Data from Binance with Python" by marketstack.
-        (https://steemit.com/python/@marketstack/how-to-download-historical-price-data-from-binance-with-python)
-        '''
-        quote = self.coin + self.market
-        interval = self.candles
-
-        root_url = 'https://api.binance.com/api/v1/klines'
-        url = root_url + '?symbol=' + quote + '&interval=' + interval
-        data = json.loads(requests.get(url).text)
-        # print(data)
-        df = pd.DataFrame(data)
-        df.columns = ['open_time',
-                      'o', 'h', 'l', 'c', 'v',
-                      'close_time', 'qav', 'num_trades',
-                      'taker_base_vol', 'taker_quote_vol', 'ignore']
-        df.index = [dt.datetime.fromtimestamp(x/1000.0) for x in df.close_time]
-
-        self.DATAFRAME = df
-
-        return df
-
-    def coinGET(self,GET_METHOD):
-        '''returns ohlc data of the quote cryptocurrency with
-        the base currency (i.e. 'market'); base for alts must be either USDT or BTC'''
         quote = self.coin
         base = self.market
 
@@ -113,14 +124,14 @@ class Chart:
         elif base == 'USDT':
             self.coin = 'BTC'
             self.market = 'USDT'
-            btcusd = GET_METHOD['c'].astype('float')
+            btcusd = self.get_data(time_diff, num_candles)['c'].astype('float')
         else:
             btcusd = 1
 
         self.market = 'USDT' if quote == 'BTC' else 'BTC'
         self.coin = quote
 
-        df = GET_METHOD
+        df = self.get_data(time_diff, num_candles)
 
         df['close'] = df['c'].astype('float')*btcusd
         df['open'] = df['o'].astype('float')*btcusd
@@ -131,8 +142,7 @@ class Chart:
         return df
 
     def rollstats_MACD(self):
-        '''rolling statistics (also known as "financial indicators")
-        ---MOVING AVERAGES STRATEGY (MACD)---'''
+        '''Compute the rolling statistics (also known as "financial indicators") using the Moving Averages Strategy (MACD) '''
         df = self.DATAFRAME
         MA1 = 12
         MA2 = 26
@@ -143,7 +153,7 @@ class Chart:
         df['rollstats'] = df['fast MA'] - df['slow MA']
 
     def regimes(self):
-        '''trading regimes'''
+        '''Assign trading regimes to the data based on the computed rolling statistics.'''
         df = self.DATAFRAME
 
         rollstats = df['rollstats']
@@ -158,7 +168,11 @@ class Chart:
         df['regime_old'] = df['regime']
 
     def strat_compute(self):
-        '''COMPUTE STRATEGY -- MARKET V STRAT RESULTS '''
+        '''Compute the market and strategy returns based on the assigned trading regimes,
+        and print the final return-on-investment as a message.
+
+        The computed signal is used to fill the gaps in the signal of the trading regime.
+        '''
         df = self.DATAFRAME
 
         df['market'] = np.log(df['close'] / df['close'].shift(1))
