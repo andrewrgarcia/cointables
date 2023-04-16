@@ -1,5 +1,5 @@
 # virtualenvs & cache
-venv
+venv/
 __pycache__
 
 # permissions / keys

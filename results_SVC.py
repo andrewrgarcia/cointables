@@ -52,7 +52,7 @@ def backtest():
   chart.market = "USDT"
   chart.candles = "30m"
   
-  chart.coinGET(chart.get_data(num_candles=None))
+  chart.coinGET(num_candles=None)
   
   df = chart.DATAFRAME
 

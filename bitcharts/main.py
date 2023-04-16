@@ -12,7 +12,8 @@ import pandas as pd
 
 class Chart:
     def __init__(self, client, coin='BTC', market='USDT', candles='30m'):
-        '''Chart class. Handler for the creation of financial charts for cryptocurrencies and analysis thereof
+        """
+        Chart class. Handler for the creation of financial charts for cryptocurrencies and analysis thereof
 
         Parameters
         ----------
@@ -29,8 +30,8 @@ class Chart:
             Financial data of price activity loaded from above information
         message : str
             Any message from an external function to store on Chart class (for easy migration across modules)
-        '''
-        self.client = client        # client binance object API key api secre7
+        """
+        self.client = client        # client binance object API key api secret
         self.coin = coin
         self.market = market
         self.candles = candles
@@ -39,13 +40,13 @@ class Chart:
 
 
     def get_bars__old(self):
-        '''
+        """
         This method is no longer used and has been discontinued. It cannot perform GET requests when a remote server (such as Jupyter notebook or GitHub Actions) is used.
 
         It was originally adapted from the following source:
         "How to Download Historical Price Data from Binance with Python" by marketstack.
         (https://steemit.com/python/@marketstack/how-to-download-historical-price-data-from-binance-with-python)
-        '''
+        """
         quote = self.coin + self.market
         interval = self.candles
 
@@ -101,9 +102,91 @@ class Chart:
         self.DATAFRAME = df
 
         return df
+    
+    def get_data_random(self, set_time=False, time_diff=2419200000):
+        """
+        Fetches market data for a randomly sampled epoch timestamp or a specified timestamp within the range of Thursday, July 13, 2017 8:26:40 AM GMT (1500000000) 
+        and Friday, September 9, 2022 8:54:54 AM GMT (1665308894), with a chart time frame defined by the time difference between the sampled epoch timestamp and the end time.
+
+        Parameters
+        ----------------
+        set_time : float, optional
+            If set to a float, uses the given epoch timestamp to fetch data.
+            Otherwise, samples a timestamp randomly between Thursday, July 13, 2017 8:26:40 AM GMT (1500000000) and Friday, September 9, 2022 8:54:54 AM GMT (1665308894).
+        
+        time_diff : int, optional
+            The size of the chart time frame between the specified or randomly sampled epoch timestamp and the end time, in milliseconds. 
+            The default value is 28 days (2419200000 milliseconds).
+        """
+        if set_time:
+            self.sampled_epoch = set_time
+        else:
+            self.sampled_epoch = np.random.uniform(1500000000, 1665308894)
+
+        quote = self.coin + self.market
+        interval = self.candles
+
+        candlesticks = self.client.get_historical_klines(
+            quote, interval, str(self.sampled_epoch), str(self.sampled_epoch + time_diff)
+        )
+        df = pd.DataFrame(candlesticks, columns=['open_time', 'o', 'h', 'l', 'c', 'v', 'close_time', 'qav', 'num_trades', 'taker_base_vol', 'taker_quote_vol', 'ignore'])
+        df.index = [dt.datetime.fromtimestamp(x/1000.0) for x in df.close_time]
+
+        self.dataframe = df
+
+        return df
+        
+
+    def coinGET_custom(self,GET_METHOD):
+        """
+        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market') for custom GET_METHOD.
+        
+        Note: The base currency for alts must be either USDT or BTC.
+        
+        Parameters
+        -------------------
+        GET_METHOD: method or function
+            A custom GET_METHOD that returns the OHLC data for a specific cryptocurrency market.
+            
+            Example:
+            ------------
+            >>> def get_btc_data():
+            >>>     # Some code that fetches and returns OHLC data for the BTC/USDT market.
+            >>>     return btc_data
+            >>>
+            >>> btc_df = coinGET_custom(get_btc_data())
+
+        """
+        quote = self.coin
+        base = self.market
+
+
+        if quote == 'BTC':
+            btcusd = 1
+        elif base == 'USDT':
+            self.coin = 'BTC'
+            self.market = 'USDT'
+            btcusd = GET_METHOD['c'].astype('float')
+        else:
+            btcusd = 1
+
+        self.market = 'USDT' if quote == 'BTC' else 'BTC'
+        self.coin = quote
+
+        df = GET_METHOD
+
+        df['close'] = df['c'].astype('float')*btcusd
+        df['open'] = df['o'].astype('float')*btcusd
+        df['high'] = df['h'].astype('float')*btcusd
+        df['low'] = df['l'].astype('float')*btcusd
+
+        self.DATAFRAME = df
+        return df
+
 
     def coinGET(self,time_diff=2419200000, num_candles=500):
-        '''Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market').
+        """
+        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market').
         
         Note: The base currency for alts must be either USDT or BTC.
         
@@ -114,35 +197,33 @@ class Chart:
         num_candles : int, optional
             An integer representing the number of historical candles to retrieve. The default value is 500. If this parameter is provided, it takes priority over the `time_diff` parameter.
 
-        '''
-        quote = self.coin
-        base = self.market
+        """
+        df = self.coinGET_custom(self.get_data(time_diff, num_candles))
+
+        return df
 
 
-        if quote == 'BTC':
-            btcusd = 1
-        elif base == 'USDT':
-            self.coin = 'BTC'
-            self.market = 'USDT'
-            btcusd = self.get_data(time_diff, num_candles)['c'].astype('float')
-        else:
-            btcusd = 1
+    def coinGET_random(self, set_time=False, time_diff=2419200000):
+        """
+        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market') in a randomly chosen time window with a chart time frame defined by the time difference 
+        between the sampled epoch timestamp and the end time, where the chart time frame is set to time_diff.
 
-        self.market = 'USDT' if quote == 'BTC' else 'BTC'
-        self.coin = quote
+        Parameters
+        ----------------
+        set_time : float, optional
+            If set to a float, uses the given epoch timestamp to fetch data.
+            Otherwise, samples a timestamp randomly between Thursday, July 13, 2017 8:26:40 AM GMT (1500000000) and Friday, September 9, 2022 8:54:54 AM GMT (1665308894).
+            
+        time_diff : int, optional
+            The chart time frame, in milliseconds, between the specified or randomly sampled epoch timestamp and the end time. 
+            The default value is 28 days (2419200000 milliseconds).
+        """
+        df = self.coinGET_custom(self.get_data_random(set_time, time_diff))
 
-        df = self.get_data(time_diff, num_candles)
-
-        df['close'] = df['c'].astype('float')*btcusd
-        df['open'] = df['o'].astype('float')*btcusd
-        df['high'] = df['h'].astype('float')*btcusd
-        df['low'] = df['l'].astype('float')*btcusd
-
-        self.DATAFRAME = df
         return df
 
     def rollstats_MACD(self):
-        '''Compute the rolling statistics (also known as "financial indicators") using the Moving Averages Strategy (MACD) '''
+        """Compute the rolling statistics (also known as "financial indicators") using the Moving Averages Strategy (MACD) """
         df = self.DATAFRAME
         MA1 = 12
         MA2 = 26
@@ -153,7 +234,7 @@ class Chart:
         df['rollstats'] = df['fast MA'] - df['slow MA']
 
     def regimes(self):
-        '''Assign trading regimes to the data based on the computed rolling statistics.'''
+        """Assign trading regimes to the data based on the computed rolling statistics."""
         df = self.DATAFRAME
 
         rollstats = df['rollstats']
@@ -168,11 +249,12 @@ class Chart:
         df['regime_old'] = df['regime']
 
     def strat_compute(self):
-        '''Compute the market and strategy returns based on the assigned trading regimes,
+        """
+        Compute the market and strategy returns based on the assigned trading regimes,
         and print the final return-on-investment as a message.
 
         The computed signal is used to fill the gaps in the signal of the trading regime.
-        '''
+        """
         df = self.DATAFRAME
 
         df['market'] = np.log(df['close'] / df['close'].shift(1))
