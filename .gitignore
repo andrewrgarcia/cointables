@@ -7,3 +7,6 @@ config.py
 
 # docs
 docs/build
+
+# secret tests
+try.py

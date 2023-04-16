@@ -8,3 +8,5 @@ Cointables provides the `Chart` class for extracting historical Open-High-Low-Cl
 .. autoclass:: Chart
    :members:
    :undoc-members:
+
+   .. automethod:: __init__
