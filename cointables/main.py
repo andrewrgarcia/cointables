@@ -18,17 +18,23 @@ class Chart:
         candles : str
             Time interval for candles (default: '30m')
             Valid intervals are: '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'
+
+        Attributes
+        ----------------
         dataframe : <pandas.DataFrame object>
-            Financial data of price activity loaded from above information
+            A DataFrame object containing the financial data of price activity loaded from above information.
         message : str
-            Any message from an external function to store on Chart class (for easy migration across modules)
+            Any message from an external function to store on Chart class (for easy migration across modules).
+        sampled_epoch : int or None
+            The epoch timestamp (either randomly sampled or set by user) see: `get_data_random` method. 
         """
         self.client = client        # client binance object API key api secret
         self.coin = coin
         self.market = market
         self.candles = candles
-        self.dataframe = []
+        self.dataframe = pd.DataFrame()
         self.message = ''
+        self.sampled_epoch = None
 
     def get_data(self, time_diff=2419200000, num_candles=500):
         """
@@ -104,9 +110,7 @@ class Chart:
 
     def coinGET_custom(self,GET_METHOD):
         """
-        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market') for custom GET_METHOD.
-        
-        Note: The base currency for alts must be either USDT or BTC.
+        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market') for custom GET_METHOD. Note: The base currency for alts must be either USDT or BTC.
         
         Parameters
         -------------------
@@ -153,9 +157,7 @@ class Chart:
 
     def coinGET(self,time_diff=2419200000, num_candles=500):
         """
-        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market').
-        
-        Note: The base currency for alts must be either USDT or BTC.
+        Returns OHLC data of the quote cryptocurrency with the base currency (i.e., 'market'). Note: The base currency for alts must be either USDT or BTC.
         
         Parameters
         -------------------

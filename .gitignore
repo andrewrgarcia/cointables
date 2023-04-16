@@ -4,3 +4,6 @@ __pycache__
 
 # permissions / keys
 config.py
+
+# docs
+docs/build
