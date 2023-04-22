@@ -78,11 +78,11 @@ class Chart:
     def _get_candle_width(self):
         """Returns the candle width (in milliseconds) for the specified interval."""
         intervals = {
-            'm': 60 ,
-            'h': 3600 ,
-            'd': 86400 ,
-            'w': 604800 ,
-            'M': 2592000 ,
+            'm': 60 * 1000,
+            'h': 3600 * 1000,
+            'd': 86400 * 1000,
+            'w': 604800 * 1000,
+            'M': 2592000 * 1000,
         }
         if self.candles[-1] not in intervals:
             raise ValueError(f'Invalid interval: {self.candles}')
@@ -134,7 +134,7 @@ class Chart:
         else:
             end_time = self.sampled_epoch
             interval_seconds = self._get_candle_width()
-            start_time = end_time - dt.timedelta(seconds=interval_seconds * num_candles).total_seconds()
+            start_time = end_time - dt.timedelta(seconds=(interval_seconds // 1000) * num_candles).total_seconds()
 
             candlesticks = self.client.get_historical_klines(
                 quote, interval, str(start_time * 1000), str(end_time * 1000),limit=num_candles
